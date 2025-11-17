@@ -2,7 +2,7 @@
 
 ## Problem
 
-Current agentic browsers simulate human interaction: they scrape pixels, synthesize clicks, and hope the DOM structure remains stable. This approach is **brittle** (breaks on minor UI changes), **slow** (requires full page rendering), and **opaque** (humans can't understand why agents made specific decisions).
+Modern agentic browsers resemble early automobiles designed like carriages; they rely on a human-focused, inefficient interface, forcing complex systems to form around navigating it rather than a machine-native semantic layer. Current agentic browsers simulate human interaction: they scrape pixels, synthesize clicks, and hope the DOM structure remains stable. This approach is **brittle** (breaks on minor UI changes), **slow** (requires full page rendering), and **opaque** (humans can't understand why agents made specific decisions).
 
 ## Solution Concept
 
@@ -91,4 +91,5 @@ Traces capture `traceId`, `goal`, `goalId`, `actionId`, `steps`, and `provenance
 Apache-2.0 (see `LICENSE` file).
 
 #
+
 

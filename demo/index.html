@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-UI Semantic Layer Demo</title>
+  <style>
+    :root {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #0f172a;
+      background: #f8fafc;
+    }
+    body {
+      margin: 0;
+      padding: 2rem;
+      line-height: 1.5;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .header {
+      margin-bottom: 2rem;
+    }
+    h1 {
+      margin-bottom: 0.25rem;
+      color: #1e293b;
+    }
+    .subtitle {
+      color: #64748b;
+      margin-bottom: 1.5rem;
+    }
+    .demo-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 900px) {
+      .demo-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    .panel {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+    .panel h2 {
+      margin-top: 0;
+      font-size: 1.1rem;
+      color: #334155;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    form {
+      margin: 0;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #334155;
+      font-size: 0.9rem;
+    }
+    label:first-child {
+      margin-top: 0;
+    }
+    input {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      margin-top: 0.35rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    input.invalid {
+      border-color: #ef4444;
+      background-color: #fef2f2;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.8rem 1.2rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: #2563eb;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 100%;
+    }
+    button:hover:not(:disabled) {
+      background: #1d4ed8;
+    }
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+    .agent-panel {
+      min-height: 400px;
+    }
+    .agent-thought {
+      background: #f1f5f9;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      border-left: 3px solid #3b82f6;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .agent-thought.step {
+      border-left-color: #10b981;
+    }
+    .agent-thought.error {
+      border-left-color: #ef4444;
+      background: #fef2f2;
+    }
+    .agent-thought.success {
+      border-left-color: #10b981;
+      background: #f0fdf4;
+    }
+    .trace-viewer {
+      margin-top: 2rem;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      font-family: "Fira Code", "Consolas", "Monaco", monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .highlighted {
+      border-color: #f97316 !important;
+      box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.35) !important;
+      background-color: #fff7ed !important;
+    }
+    .validation-message {
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      color: #ef4444;
+    }
+    .validation-message.valid {
+      color: #10b981;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>AI-UI Semantic Layer Demo</h1>
+    <p class="subtitle">Dual-layer architecture: agents read semantic manifests (actions, slots, constraints) while humans use the normal UI. The UI can change; the semantic interface stays stable. This demo shows goal-driven execution through semantic actions, not DOM scraping.</p>
+  </div>
+
+  <div class="demo-container">
+    <!-- Human UI Panel -->
+    <div class="panel">
+      <h2>Human UI</h2>
+      <form id="flight-search">
+        <label for="origin">Origin Airport (IATA)</label>
+        <input id="origin" type="text" placeholder="SFO">
+        <div id="origin-validation" class="validation-message"></div>
+
+        <label for="destination">Destination Airport (IATA)</label>
+        <input id="destination" type="text" placeholder="JFK">
+        <div id="destination-validation" class="validation-message"></div>
+
+        <label for="date-range">Date Range (YYYY-MM-DD/YYYY-MM-DD)</label>
+        <input id="date-range" type="text" placeholder="2025-01-10/2025-01-15">
+        <div id="date-range-validation" class="validation-message"></div>
+
+        <label for="max-budget">Max Budget (USD)</label>
+        <input id="max-budget" type="number" placeholder="400" min="100">
+        <div id="max-budget-validation" class="validation-message"></div>
+
+        <button type="button" id="simulate-agent">Simulate Agent</button>
+      </form>
+    </div>
+
+    <!-- Agent Reasoning Panel -->
+    <div class="panel agent-panel">
+      <h2>Agent Reasoning</h2>
+      <div id="agent-thoughts"></div>
+    </div>
+  </div>
+
+  <div class="trace-viewer" id="trace-viewer">// Execution trace will appear here...</div>
+
+  <script src="demo.js"></script>
+</body>
+</html>

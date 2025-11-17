@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-ui/action.schema.json",
+  "title": "AI-UI Semantic Action Manifest",
+  "type": "object",
+  "required": ["site", "version", "actions", "goals", "stateModels"],
+  "properties": {
+    "site": {
+      "type": "string",
+      "description": "Human-readable site identifier (e.g., domain name)."
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic manifest version (SemVer recommended)."
+    },
+    "goals": {
+      "type": "array",
+      "description": "High-level objectives that actions can fulfill.",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique goal identifier."
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable goal description."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "stateModels": {
+      "type": "object",
+      "description": "Domain entities and their key fields/status values.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Description of this state model."
+          },
+          "fields": {
+            "type": "array",
+            "description": "Key fields of this entity.",
+            "items": {
+              "type": "object",
+              "required": ["name", "type"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Field name."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Field type (string, number, etc.)."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Field description."
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "statuses": {
+            "type": "array",
+            "description": "Possible status values for this entity.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "actions": {
+      "type": "array",
+      "description": "Available semantic actions.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "description", "inputs", "outputs"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique action identifier."
+          },
+          "title": {
+            "type": "string",
+            "description": "Human-readable action title."
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed action description."
+          },
+          "inputs": {
+            "type": "array",
+            "description": "Input slots (parameters) for this action.",
+            "items": {
+              "type": "object",
+              "required": ["name", "type", "required"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Slot name."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Type hint (text, date, currency, date-range, etc.)."
+                },
+                "required": {
+                  "type": "boolean",
+                  "description": "Whether this input is required."
+                },
+                "constraints": {
+                  "type": "object",
+                  "description": "Domain-level constraints (regex patterns, ranges, enums, etc.).",
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "description": "Output slots (results) from this action.",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Output name."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Output description."
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "ui_hint": {
+            "type": "object",
+            "description": "Optional hints for mapping to DOM elements.",
+            "properties": {
+              "formSelector": {
+                "type": "string",
+                "description": "CSS selector for the form container."
+              },
+              "fieldSelectors": {
+                "type": "object",
+                "description": "Mapping from slot names to CSS selectors.",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "executionPolicy": {
+            "type": "object",
+            "description": "Execution behavior configuration.",
+            "properties": {
+              "dry_run_default": {
+                "type": "boolean",
+                "description": "Whether dry-run mode is the default (true) or execute mode (false).",
+                "default": true
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
+

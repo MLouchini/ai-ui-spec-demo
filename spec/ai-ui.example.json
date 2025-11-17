@@ -1,0 +1,94 @@
+{
+  "$schema": "./action.schema.json",
+  "site": "demo.ai-ui",
+  "version": "0.1.0",
+  "goals": [
+    {
+      "id": "find_cheap_flight",
+      "description": "Return the lowest-cost itinerary within the specified constraints."
+    }
+  ],
+  "stateModels": {
+    "booking": {
+      "description": "Represents a flight booking intent or confirmed reservation.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Client-generated unique identifier for this booking."
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "description": "Current lifecycle status of the booking."
+        }
+      ],
+      "statuses": ["draft", "quoted", "confirmed", "cancelled"]
+    }
+  },
+  "actions": [
+    {
+      "id": "search_flights",
+      "title": "Search Flights",
+      "description": "Query available flights for a city pair within specified date and budget constraints.",
+      "inputs": [
+        {
+          "name": "origin",
+          "type": "text",
+          "required": true,
+          "constraints": {
+            "pattern": "^[A-Z]{3}$",
+            "description": "IATA airport code (3 uppercase letters)."
+          }
+        },
+        {
+          "name": "destination",
+          "type": "text",
+          "required": true,
+          "constraints": {
+            "pattern": "^[A-Z]{3}$",
+            "description": "IATA airport code (3 uppercase letters)."
+          }
+        },
+        {
+          "name": "date_range",
+          "type": "date-range",
+          "required": true,
+          "constraints": {
+            "format": "YYYY-MM-DD/YYYY-MM-DD",
+            "description": "Date range in format: start_date/end_date"
+          }
+        },
+        {
+          "name": "max_budget",
+          "type": "currency",
+          "required": false,
+          "constraints": {
+            "minimum": 100,
+            "currency": "USD",
+            "description": "Maximum budget in USD (minimum $100)."
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "results",
+          "description": "Array of itinerary summaries sorted by price (ascending)."
+        }
+      ],
+      "ui_hint": {
+        "formSelector": "#flight-search",
+        "fieldSelectors": {
+          "origin": "#origin",
+          "destination": "#destination",
+          "date_range": "#date-range",
+          "max_budget": "#max-budget"
+        }
+      },
+      "executionPolicy": {
+        "dry_run_default": true
+      }
+    }
+  ]
+}
+

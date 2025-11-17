@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-ui/trace.schema.json",
+  "title": "AI-UI Action Execution Trace",
+  "type": "object",
+  "description": "Schema for recording explainable execution traces of semantic actions.",
+  "required": ["traceId", "actionId", "inputs", "steps", "resultSummary"],
+  "properties": {
+    "traceId": {
+      "type": "string",
+      "description": "Unique identifier for this trace."
+    },
+    "actionId": {
+      "type": "string",
+      "description": "The action ID that was executed."
+    },
+    "inputs": {
+      "type": "object",
+      "description": "Concrete slot values supplied to the action.",
+      "additionalProperties": true
+    },
+    "steps": {
+      "type": "array",
+      "description": "Chronological sequence of execution steps.",
+      "items": {
+        "type": "object",
+        "required": ["step", "time", "note"],
+        "properties": {
+          "step": {
+            "type": "integer",
+            "description": "Step number (1-indexed).",
+            "minimum": 1
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp of when this step occurred."
+          },
+          "note": {
+            "type": "string",
+            "description": "Human-readable description of what happened in this step."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "resultSummary": {
+      "type": "string",
+      "description": "High-level summary of the execution result."
+    },
+    "provenance": {
+      "type": "array",
+      "description": "Optional provenance information about data sources.",
+      "items": {
+        "type": "object",
+        "required": ["source", "detail"],
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Source identifier (e.g., 'dom', 'api', 'cache')."
+          },
+          "detail": {
+            "type": "string",
+            "description": "Specific detail about the source (e.g., CSS selector, API endpoint)."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "traceId": "trace-20250101-123456",
+      "actionId": "search_flights",
+      "inputs": {
+        "origin": "SFO",
+        "destination": "JFK",
+        "date_range": "2025-01-10/2025-01-15",
+        "max_budget": "400"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "time": "2025-01-01T10:00:00Z",
+          "note": "Validated input constraints (IATA codes, date format, budget range)."
+        },
+        {
+          "step": 2,
+          "time": "2025-01-01T10:00:01Z",
+          "note": "Mapped slots to DOM fields via ui_hint selectors."
+        },
+        {
+          "step": 3,
+          "time": "2025-01-01T10:00:03Z",
+          "note": "Captured results from DOM response area."
+        }
+      ],
+      "resultSummary": "Found 3 itineraries under $400. Dry-run mode: no actual booking created.",
+      "provenance": [
+        {
+          "source": "dom",
+          "detail": "#results-list"
+        }
+      ]
+    }
+  ]
+}
+

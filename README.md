@@ -1,4 +1,4 @@
-# AI-UI Semantic Action Layer Demo
+# Agent-UI Semantic Action Layer Demo
 
 ## Problem
 
@@ -91,3 +91,4 @@ Traces capture `traceId`, `goal`, `goalId`, `actionId`, `steps`, and `provenance
 Apache-2.0 (see `LICENSE` file).
 
 #
+
